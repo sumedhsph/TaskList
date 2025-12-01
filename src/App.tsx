@@ -40,7 +40,7 @@ function App() {
   return (
     <main className="app-container">
       <header className="header">
-        <h1 className="heading">Task List</h1>
+        <h1 className="heading">Task List with Github Actions</h1>
       </header>
 
       <form onSubmit={handleSubmit} className="form-container">
