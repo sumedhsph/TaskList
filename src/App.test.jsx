@@ -68,7 +68,7 @@ describe("Todo App - Full Functionality", () => {
     await user.type(screen.getByPlaceholderText("Enter task name"), "Delete me");
     await user.click(screen.getByText("Add Task"));
 
-    const deleteButton = screen.getByText("DeleteX"); // jo × button hai
+    const deleteButton = screen.getByText("Delete"); // jo × button hai
     await user.click(deleteButton);
 
     expect(screen.queryByText("Delete me")).not.toBeInTheDocument();
