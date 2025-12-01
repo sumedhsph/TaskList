@@ -1,0 +1,38 @@
+# .github/workflows/deploy.yml
+# Yeh file GitHub Actions ke liye hai – copy-paste kar do exactly
+
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm run test:run -- --coverage
+        continue-on-error: true  # Abhi tests nahi hain to fail na ho, baad mein hata dena
+
+      - name: Deploy to Vercel
+        if: github.event_name == 'push'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          # vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}  # Agar error aaye tab uncomment kar dena
