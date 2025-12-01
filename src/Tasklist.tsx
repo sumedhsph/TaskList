@@ -15,7 +15,7 @@ function Tasklist({
   return (
     <div className="tasklist-container">
       {tasks.length === 0 ? (
-        <p>No tasks available.</p>
+        <p className="empty-state">No tasks available.</p>
       ) : (
         <ul className="task-item">
           {tasks.map((task) => (
