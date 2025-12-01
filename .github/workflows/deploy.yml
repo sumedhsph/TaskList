@@ -26,10 +26,10 @@ jobs:
 
       - name: Run Tests
         run: npm run test:run -- --coverage
-        continue-on-error: true  # Abhi tests nahi hain to fail na ho, baad mein hata dena
+        # continue-on-error: true  # Abhi tests nahi hain to fail na ho, baad mein hata dena
 
       - name: Deploy to Vercel
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && success()
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
