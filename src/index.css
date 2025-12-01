@@ -106,3 +106,7 @@ body {
   display: inline-block;
   padding-left: 10px;
 }
+.task-item span.completed{
+  color: #999;
+  text-decoration: line-through;
+} 
