@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
- 
+import { useState, useRef, useCallback } from "react";
+
 import Tasklist from "./Tasklist";
 
 export interface Task {
@@ -27,10 +27,23 @@ function App() {
     }
   };
 
+  const removeTask = useCallback((id: string) => {
+    setTaskList((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  }, []);
+
+  const taskStatus = (id: string, completed: boolean) => {
+    setTaskList((prevTasks) =>
+      prevTasks.map((task) => (task.id === id ? { ...task, completed } : task))
+    );
+  };
+
   return (
-    <>
-      <h1>Task List</h1>
-      <form onSubmit={handleSubmit}>
+    <main className="app-container">
+      <header className="header">
+        <h1 className="heading">Task List</h1>
+      </header>
+
+      <form onSubmit={handleSubmit} className="form-container">
         <input
           ref={inputRef}
           name="taskinput"
@@ -38,11 +51,18 @@ function App() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Enter task name"
+          className="task-input"
         />
-        <button type="submit">Add Task</button>
+        <button type="submit" className="add-btn">
+          Add Task
+        </button>
       </form>
-      <Tasklist tasks={taskList} />
-    </>
+      <Tasklist
+        tasks={taskList}
+        removeTask={removeTask}
+        taskStatus={taskStatus}
+      />
+    </main>
   );
 }
 
