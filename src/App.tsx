@@ -7,6 +7,8 @@ export interface Task {
   title: string;
   completed: boolean;
 }
+
+
 function App() {
   const [input, setInput] = useState<string>("");
   const [taskList, setTaskList] = useState<Task[]>([]);
