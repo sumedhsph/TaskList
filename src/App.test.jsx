@@ -1,74 +1,75 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
 
-// Mock crypto if needed (Date.now() se id ban raha hai)
+// Mock crypto.randomUUID if you ever switch to it (currently using Date.now())
 vi.mock("crypto", () => ({
   randomUUID: () => "mocked-uuid",
 }));
 
 describe("Todo App - Full Functionality", () => {
+  // Reset state before each test for isolation
   beforeEach(() => {
-    // Har test se pehle localStorage clear kar do
-    localStorage.clear();
-    // Ya phir App render karne se pehle clean state
-    render(<App />);
+    localStorage.clear();        // Clear localStorage if you add persistence later
+    render(<App />);             // Fresh render of the app for every test
   });
 
-  it("should render heading 'Task List'", () => {
+  it("should render the main heading 'Task List'", () => {
     expect(screen.getByText("Task List")).toBeInTheDocument();
   });
 
-  it("should add a new task when form is submitted", async () => {
+  it("should add a new task when the form is submitted", async () => {
     const user = userEvent.setup();
 
     const input = screen.getByPlaceholderText("Enter task name");
-    const button = screen.getByRole("button", { name: "Add Task" });
+    const addButton = screen.getByRole("button", { name: "Add Task" });
 
     await user.type(input, "Learn Vitest");
-    await user.click(button);
+    await user.click(addButton);
 
     expect(screen.getByText("Learn Vitest")).toBeInTheDocument();
-    expect(input).toHaveValue(""); // input clear hona chahiye
+    expect(input).toHaveValue(""); // Input should be cleared after submission
   });
 
-  it("should not add empty task", async () => {
+  it("should not add an empty task", async () => {
     const user = userEvent.setup();
-    const button = screen.getByRole("button", { name: "Add Task" });
+    const addButton = screen.getByRole("button", { name: "Add Task" });
 
-    await user.click(button);
+    await user.click(addButton);
 
-    // Task list khali hona chahiye
+    // No checkbox should exist → list is empty
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
   });
 
   it("should toggle task completion status", async () => {
     const user = userEvent.setup();
 
-    // Pehle task add karo
+    // First, add a task
     await user.type(screen.getByPlaceholderText("Enter task name"), "Buy milk");
     await user.click(screen.getByText("Add Task"));
 
     const checkbox = screen.getByRole("checkbox");
 
-    // Pehli baar click → completed = true
+    // First click → mark as completed
     await user.click(checkbox);
     const taskText = screen.getByText("Buy milk");
-    expect(taskText).toHaveClass("completed"); // CSS class lagi hogi
+    expect(taskText).toHaveClass("completed");
 
-    // Dusri baar click → completed = false
+    // Second click → mark as incomplete
     await user.click(checkbox);
     expect(taskText).not.toHaveClass("completed");
   });
 
-  it("should delete a task when delete button is clicked", async () => {
+  it("should delete a task when the delete button is clicked", async () => {
     const user = userEvent.setup();
 
+    // Add a task first
     await user.type(screen.getByPlaceholderText("Enter task name"), "Delete me");
     await user.click(screen.getByText("Add Task"));
 
-    const deleteButton = screen.getByText("Delete"); // jo × button hai
+    // Find and click the delete button (using × symbol)
+    const deleteButton = screen.getByText("Delete");
     await user.click(deleteButton);
 
     expect(screen.queryByText("Delete me")).not.toBeInTheDocument();

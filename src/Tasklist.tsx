@@ -28,7 +28,7 @@ function Tasklist({
               <span className={task.completed ? "completed" : ""}>{task.title}</span>
               <button
                 onClick={() => removeTask(task.id)}
-                className="remove-btn"
+                className="delete-btn"
               >
                 Delete
               </button>
